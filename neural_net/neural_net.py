@@ -68,6 +68,7 @@ def write_results_file(filename, num_output, confusion):
     f1s = []
 
     with open(filename, 'w') as outfile:
+        # Classification metrics for each class
         for i in range(num_output):
             accuracies.append((confusion[i, 0, 0] + confusion[i, 1, 1])
                               / confusion[i].sum())
@@ -84,6 +85,7 @@ def write_results_file(filename, num_output, confusion):
                                      recalls[-1], f1s[-1]]),
                   file=outfile)
 
+        # Micro averaging
         micro_confusion = confusion.sum(axis=0)
         micro_accuracy = (micro_confusion[0, 0] + micro_confusion[1, 1]) \
             / micro_confusion.sum()
@@ -97,6 +99,7 @@ def write_results_file(filename, num_output, confusion):
                                  micro_recall, micro_f1]),
               file=outfile)
 
+        # Macro averaging
         macro_accuracy = sum(accuracies) / len(accuracies)
         macro_precision = sum(precisions) / len(precisions)
         macro_recall = sum(recalls) / len(recalls)
@@ -112,6 +115,16 @@ def write_results_file(filename, num_output, confusion):
 def train(num_input, num_hidden, num_output, weights, training_data):
     ''' Trains neural network '''
     pass
+
+
+def sigmoid(vals):
+    ''' The sigmoid function '''
+    return 1.0 / (1.0 + np.exp(-vals))
+
+
+def sigmoid_prime(vals):
+    ''' Derivative of the sigmoid function '''
+    return sigmoid(vals) * (1-sigmoid(vals))
 
 
 def test(num_output, weights, test_data):
@@ -132,16 +145,6 @@ def test(num_output, weights, test_data):
                 confusion[i, 1, 1] += 1
 
     return confusion
-
-
-def sigmoid(vals):
-    ''' The sigmoid function '''
-    return 1.0 / (1.0 + np.exp(-vals))
-
-
-def sigmoid_prime(vals):
-    ''' Derivative of the sigmoid function '''
-    return sigmoid(vals) * (1-sigmoid(vals))
 
 
 def feedforward(inputs, weights):
