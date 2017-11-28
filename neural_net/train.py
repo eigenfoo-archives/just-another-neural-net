@@ -5,12 +5,15 @@ train.py
 import neural_net as nn
 
 
-neural_net_filename = input('Neural network init filename: ')
-Ni, Nh, No, weights = nn.read_neural_net_file(neural_net_filename)
-train_filename = input('Neural network training data filename: ')
-training_data = nn.read_data_file(train_filename)
+NEURAL_NET_FILENAME = input('Neural network init filename: ')
+NUM_INPUT, NUM_HIDDEN, NUM_OUTPUT, WEIGHTS = \
+    nn.read_neural_net_file(NEURAL_NET_FILENAME)
 
-nn.train(Ni, Nh, No, weights, training_data)
+TRAIN_FILENAME = input('Neural network training data filename: ')
+TRAINING_DATA = nn.read_data_file(TRAIN_FILENAME)
 
-trained_filename = input('Neural network trained filename: ')
-nn.write_trained_file(trained_filename, Ni, Nh, No, weights)
+nn.train(NUM_INPUT, NUM_HIDDEN, NUM_OUTPUT, WEIGHTS, TRAINING_DATA)
+
+TRAINED_FILENAME = input('Neural network trained filename: ')
+nn.write_trained_file(TRAINED_FILENAME, NUM_INPUT, NUM_HIDDEN, NUM_OUTPUT,
+                      WEIGHTS)

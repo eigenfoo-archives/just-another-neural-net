@@ -2,84 +2,152 @@
 neural_net.py
 '''
 
+from math import trunc
 import numpy as np
-from decimal import Decimal, ROUND_HALF_UP
 
 
 def read_neural_net_file(filename):
     ''' Reads neural net file'''
-    with open(filename) as f:
-        line = f.readline()
+    with open(filename, 'r') as infile:
+        line = infile.readline()
         nums = [int(num) for num in line.split()]
-        Ni, Nh, No = nums
+        num_input, num_hidden, num_output = nums
 
-        w1 = np.zeros([Nh, Ni+1])
-        for i in range(Nh):
-            line = f.readline()
+        weights1 = np.zeros([num_hidden, num_input+1])
+        for i in range(num_hidden):
+            line = infile.readline()
             nums = [float(num) for num in line.split()]
-            w1[i, :] = nums
+            weights1[i, :] = nums
 
-        w2 = np.zeros([No, Nh+1])
-        for i in range(No):
-            line = f.readline()
+        weights2 = np.zeros([num_output, num_hidden+1])
+        for i in range(num_output):
+            line = infile.readline()
             nums = [float(num) for num in line.split()]
-            w2[i, :] = nums
+            weights2[i, :] = nums
 
-    return Ni, Nh, No, [w1, w2]
+    return num_input, num_hidden, num_output, [weights1, weights2]
 
 
 def read_data_file(filename):
     ''' Reads data file'''
-    with open(filename) as f:
-        line = f.readline()
+    with open(filename, 'r') as infile:
+        line = infile.readline()
         nums = [int(num) for num in line.split()]
-        num_obs, Ni, No = nums
+        num_obs, num_input, num_output = nums
 
-        inputs = np.zeros([num_obs, Ni])
-        outputs = np.zeros([num_obs, No])
+        inputs = np.zeros([num_obs, num_input])
+        outputs = np.zeros([num_obs, num_output])
 
         for i in range(num_obs):
-            line = f.readline()
+            line = infile.readline()
             nums = [float(num) for num in line.split()]
-            inputs[i, :] = nums[:Ni]
-            outputs[i, :] = nums[Ni:]
+            inputs[i, :] = nums[:num_input]
+            outputs[i, :] = nums[num_input:]
 
     return list(zip(inputs, outputs))
 
 
-def write_trained_file(filename, Ni, Nh, No, weights):
+def write_trained_file(filename, num_input, num_hidden, num_output, weights):
     ''' Writes trained neural net '''
-    with open(filename) as f:
-        print(' '.join(str(n) for n in [Ni, Nh, No]), file=f)
-        for i in range(Nh):
+    with open(filename, 'w') as outfile:
+        print(' '.join(str(n) for n in [num_input, num_hidden, num_output]),
+              file=outfile)
+        for i in range(num_hidden):
             print(' '.join('{:.3f}'.format(j) for j in weights[0][i, :]),
-                  file=f)
-        for i in range(No):
+                  file=outfile)
+        for i in range(num_output):
             print(' '.join('{:.3f}'.format(j) for j in weights[1][i, :]),
-                  file=f)
+                  file=outfile)
 
 
-def write_results_file(filename):
+def write_results_file(filename, num_output, confusion):
     ''' Writes results file '''
-    with open(filename) as f:
-        print('foo', file=f)
+    accuracies = []
+    precisions = []
+    recalls = []
+    f1s = []
+
+    with open(filename, 'w') as outfile:
+        for i in range(num_output):
+            accuracies.append((confusion[i, 0, 0] + confusion[i, 1, 1])
+                              / confusion[i].sum())
+            precisions.append(confusion[i, 0, 0] / confusion[i, 0, :].sum())
+            recalls.append(confusion[i, 0, 0] / confusion[i, :, 0].sum())
+            f1s.append(2*precisions[-1]*recalls[-1]
+                       / (precisions[-1] + recalls[-1]))
+
+            print(' '.join('{:d}'.format(trunc(j))
+                           for j in confusion[i].flatten()),
+                  end=' ', file=outfile)
+            print(' '.join('{:.3f}'.format(j)
+                           for j in [accuracies[-1], precisions[-1],
+                                     recalls[-1], f1s[-1]]),
+                  file=outfile)
+
+        micro_confusion = confusion.sum(axis=0)
+        micro_accuracy = (micro_confusion[0, 0] + micro_confusion[1, 1]) \
+            / micro_confusion.sum()
+        micro_precision = micro_confusion[0, 0] / micro_confusion[0, :].sum()
+        micro_recall = micro_confusion[0, 0] / micro_confusion[:, 0].sum()
+        micro_f1 = (2*micro_precision*micro_recall) \
+            / (micro_precision + micro_recall)
+
+        print(' '.join('{:.3f}'.format(j)
+                       for j in [micro_accuracy, micro_precision,
+                                 micro_recall, micro_f1]),
+              file=outfile)
+
+        macro_accuracy = sum(accuracies) / len(accuracies)
+        macro_precision = sum(precisions) / len(precisions)
+        macro_recall = sum(recalls) / len(recalls)
+        macro_f1 = (2*macro_precision*macro_recall) \
+            / (macro_precision + macro_recall)
+
+        print(' '.join('{:.3f}'.format(j)
+                       for j in [macro_accuracy, macro_precision,
+                                 macro_recall, macro_f1]),
+              file=outfile)
 
 
-def sigmoid(z):
-    '''The sigmoid function'''
-    return 1.0 / (1.0 + np.exp(-z))
-
-
-def sigmoid_prime(z):
-    '''Derivative of the sigmoid function'''
-    return sigmoid(z) * (1-sigmoid(z))
-
-
-def train():
+def train(num_input, num_hidden, num_output, weights, training_data):
     ''' Trains neural network '''
     pass
 
 
-def test():
+def test(num_output, weights, test_data):
     ''' Tests neural network '''
-    pass
+    confusion = np.zeros([num_output, 2, 2])
+
+    for inputs, outputs in test_data:
+        predicted = np.around(feedforward(inputs, weights))
+
+        for i in range(num_output):
+            if predicted[i] == 1 and outputs[i] == 1:
+                confusion[i, 0, 0] += 1
+            elif predicted[i] == 1 and outputs[i] == 0:
+                confusion[i, 0, 1] += 1
+            elif predicted[i] == 0 and outputs[i] == 1:
+                confusion[i, 1, 0] += 1
+            elif predicted[i] == 0 and outputs[i] == 0:
+                confusion[i, 1, 1] += 1
+
+    return confusion
+
+
+def sigmoid(vals):
+    ''' The sigmoid function '''
+    return 1.0 / (1.0 + np.exp(-vals))
+
+
+def sigmoid_prime(vals):
+    ''' Derivative of the sigmoid function '''
+    return sigmoid(vals) * (1-sigmoid(vals))
+
+
+def feedforward(inputs, weights):
+    ''' Return the output of the network if `inputs` is input '''
+    activation = inputs
+    for weight in weights:
+        activation = np.insert(activation, 0, -1)
+        activation = sigmoid(np.dot(weight, activation))
+    return activation

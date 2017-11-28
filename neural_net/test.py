@@ -5,12 +5,14 @@ test.py
 import neural_net as nn
 
 
-neural_net_filename = input('Neural network init filename: ')
-Ni, Nh, No, weights = nn.read_neural_net_file(neural_net_filename)
-train_filename = input('Neural network testing data filename: ')
-training_data = nn.read_data_file(train_filename)
+NEURAL_NET_FILENAME = input('Neural network init filename: ')
+NUM_INPUT, NUM_HIDDEN, NUM_OUTPUT, WEIGHTS = \
+    nn.read_neural_net_file(NEURAL_NET_FILENAME)
 
-nn.test(Ni, Nh, No, weights, training_data)
+TRAIN_FILENAME = input('Neural network testing data filename: ')
+TRAINING_DATA = nn.read_data_file(TRAIN_FILENAME)
 
-results_filename = input('Neural network trained filename: ')
-nn.write_results_file(results_filename)
+nn.test(NUM_INPUT, NUM_HIDDEN, NUM_OUTPUT, WEIGHTS, TRAINING_DATA)
+
+RESULTS_FILENAME = input('Neural network trained filename: ')
+nn.write_results_file(RESULTS_FILENAME)
