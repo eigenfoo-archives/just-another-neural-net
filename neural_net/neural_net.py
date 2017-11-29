@@ -112,9 +112,35 @@ def write_results_file(filename, num_output, confusion):
               file=outfile)
 
 
-def train(num_input, num_hidden, num_output, weights, training_data):
+def train(weights, training_data, learning_rate):
     ''' Trains neural network '''
-    pass
+    update = [np.zeros(w.shape) for w in weights]
+    for x, y in training_data:
+        # Propagate the inputs forward to compute the outputs
+        activation = x
+        activations = [x]
+        zs = []
+
+        for weight in weights:
+            z = np.dot(weight, np.insert(activation, 0, -1))
+            zs.append(z)
+            activation = sigmoid(z)
+            activations.append(activation)
+
+        # Propagate deltas backward from output layer to input layer
+        delta = sigmoid_prime(zs[-1]) * (y - activations[-1])
+        update[-1] = np.concatenate([delta,
+                                     np.multiply(activations[1], delta)])
+
+        delta = sigmoid_prime(zs[-2]) * (weights[-1][:, 1:].T @ delta)
+        update[-2] = np.insert(np.outer(delta, activations[0]),
+                               0, delta, axis=1)
+
+        # Update every weight in network using deltas
+        weights = [w - (learning_rate)*up
+                   for w, up in zip(weights, update)]
+
+        return weights
 
 
 def sigmoid(vals):
