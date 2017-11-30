@@ -12,7 +12,7 @@ NUM_INPUT, NUM_HIDDEN, NUM_OUTPUT, WEIGHTS = \
 TRAIN_FILENAME = input('Neural network testing data filename: ')
 TRAINING_DATA = nn.read_data_file(TRAIN_FILENAME)
 
-nn.test(NUM_INPUT, NUM_HIDDEN, NUM_OUTPUT, WEIGHTS, TRAINING_DATA)
+CONFUSION = nn.test(NUM_OUTPUT, WEIGHTS, TRAINING_DATA)
 
 RESULTS_FILENAME = input('Neural network trained filename: ')
-nn.write_results_file(RESULTS_FILENAME)
+nn.write_results_file(RESULTS_FILENAME, NUM_OUTPUT, CONFUSION)
