@@ -115,32 +115,34 @@ def write_results_file(filename, num_output, confusion):
 def train(weights, training_data, learning_rate, epochs):
     ''' Trains neural network '''
     for _ in range(epochs):
-        for x, y in training_data:
-            update = [np.zeros(w.shape) for w in weights]
+        for observation, classification in training_data:
+            update = [np.zeros(wt.shape) for wt in weights]
 
             # Propagate the inputs forward to compute the outputs
-            activation = x
-            activations = [x]
-            zs = []
+            activation = observation
+            activations = [observation]
+            sigmoid_inputs = []
 
-            for w in weights:
-                z = np.dot(w, np.insert(activation, 0, -1))
-                zs.append(z)
-                activation = sigmoid(z)
+            for weight in weights:
+                sigmoid_input = np.dot(weight, np.insert(activation, 0, -1))
+                sigmoid_inputs.append(sigmoid_input)
+                activation = sigmoid(sigmoid_input)
                 activations.append(activation)
 
             # Propagate deltas backward from output layer to input layer
-            delta = sigmoid_prime(zs[-1]) * (y - activations[-1])
+            delta = sigmoid_prime(sigmoid_inputs[-1]) \
+                * (classification - activations[-1])
             update[-1] = np.insert(np.outer(delta, activations[1]),
                                    0, -delta, axis=1)
 
-            delta = sigmoid_prime(zs[-2]) * (weights[-1][:, 1:].T @ delta)
+            delta = sigmoid_prime(sigmoid_inputs[-2]) \
+                * (weights[-1][:, 1:].T @ delta)
             update[-2] = np.insert(np.outer(delta, activations[0]),
                                    0, -delta, axis=1)
 
             # Update every weight in network using deltas
-            weights = [w + (learning_rate)*up
-                       for w, up in zip(weights, update)]
+            weights = [wt + (learning_rate)*up
+                       for wt, up in zip(weights, update)]
 
     return weights
 

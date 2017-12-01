@@ -1,11 +1,52 @@
 # Just Another Neural Network
 
-Description of Data Set:
+An implementation of a simple, multilayer perceptron with one hidden layer.
 
-The dataset is the famous MNIST dataset of handwritten digits (a link to the
-dataset can be found [here](http://yann.lecun.com/exdb/mnist/)).
+## Requirements
 
-There are 1797 32x32 bitmaps, each featuring a single numerical digit. The 32x32
-bitmaps were divided into nonoverlapping blocks of 4x4, and the number of
-filled-in pixels were counted for each block. This gives an 8x8 input matrix,
-where each entry is an integer between 0 and 16, inclusive.
+- A Python 3 interpreter
+
+## Installation and Usage
+
+```
+$ git clone https://github.com/eigenfoo/neural_net.git
+$ cd neural_net
+$ python train.py
+$ python test.py
+```
+
+Upon running `train.py`, the user will be prompted for:
+
+1. The filename the initial weights and biases
+2. The filename of the training data
+3. The learning rate to train with
+4. The number of epochs to train for
+5. The filename to write the trained weights and bias
+
+Upon running `test.py`, the user will be prompted for:
+
+1. The filename of the trained weights and biases
+2. The filename of the testing data
+3. The filename to write the results of the testing
+
+All file formats are as described in the specification, in the assignment
+prompt.
+
+## Description of Data Set and Learning Parameters:
+
+The dataset is the famous iris flower dataset first introduced by Ronald Fisher
+in 1936.  The dataset consists of 50 observations of 3 species of iris (setosa,
+virginica and versicolor). Each observation consists of 4 features: the lengths
+and widths of the petals and sepals of each flower.
+
+The data was shuffled and split into a training set of 100 observations, and a
+testing set of 50 observations. The learning rate was 0.5, and the number of
+epochs was 50. The network consisted of 4 input nodes, 5 hidden nodes and 3
+output nodes. This produced a fairly good results, even in spite of the small
+amount of data available.
+
+The dataset was collected from scikit-learn's `sklearn.datasets` module, and
+manually manipulated into the format described in the specification. The initial
+weights were generated using a Gaussian random number generator (mean 0,
+standard deviation 0.5), and taking their absolute values (so that all initial
+weights would be non-negative).
