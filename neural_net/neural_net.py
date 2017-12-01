@@ -114,10 +114,10 @@ def write_results_file(filename, num_output, confusion):
 
 def train(weights, training_data, learning_rate, epochs):
     ''' Trains neural network '''
-    update = [np.zeros(w.shape) for w in weights]
-
     for _ in range(epochs):
         for x, y in training_data:
+            update = [np.zeros(w.shape) for w in weights]
+
             # Propagate the inputs forward to compute the outputs
             activation = x
             activations = [x]
@@ -131,12 +131,12 @@ def train(weights, training_data, learning_rate, epochs):
 
             # Propagate deltas backward from output layer to input layer
             delta = sigmoid_prime(zs[-1]) * (y - activations[-1])
-            update[-1] = np.insert(np.multiply(activations[1], delta),
-                                   0, -delta, axis=0)
+            update[-1] = np.insert(np.outer(delta, activations[1]),
+                                   0, -delta, axis=1)
 
             delta = sigmoid_prime(zs[-2]) * (weights[-1][:, 1:].T @ delta)
             update[-2] = np.insert(np.outer(delta, activations[0]),
-                                   0, delta, axis=1)
+                                   0, -delta, axis=1)
 
             # Update every weight in network using deltas
             weights = [w + (learning_rate)*up
