@@ -9,8 +9,8 @@ An implementation of a simple, multilayer perceptron with one hidden layer.
 ## Installation and Usage
 
 ```
-$ git clone https://github.com/eigenfoo/neural_net.git
-$ cd neural_net
+$ git clone https://github.com/eigenfoo/just_another_neural_net.git
+$ cd just_another_neural_net/neural_net
 $ python train.py
 $ python test.py
 ```

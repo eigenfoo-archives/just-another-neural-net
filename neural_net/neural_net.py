@@ -7,7 +7,7 @@ import numpy as np
 
 
 def read_neural_net_file(filename):
-    ''' Reads neural net file'''
+    ''' Reads neural net file '''
     with open(filename, 'r') as infile:
         line = infile.readline()
         nums = [int(num) for num in line.split()]
@@ -29,7 +29,7 @@ def read_neural_net_file(filename):
 
 
 def read_data_file(filename):
-    ''' Reads data file'''
+    ''' Reads data file '''
     with open(filename, 'r') as infile:
         line = infile.readline()
         nums = [int(num) for num in line.split()]
@@ -135,6 +135,7 @@ def train(weights, training_data, learning_rate, epochs):
             update[-1] = np.insert(np.outer(delta, activations[1]),
                                    0, -delta, axis=1)
 
+            # There is only one hidden layer!
             delta = sigmoid_prime(sigmoid_inputs[-2]) \
                 * (weights[-1][:, 1:].T @ delta)
             update[-2] = np.insert(np.outer(delta, activations[0]),
