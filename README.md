@@ -34,6 +34,16 @@ prompt.
 
 ## Description of Data Set and Learning Parameters:
 
+The relevant files are:
+
+- `iris_init.txt`, the neural network initialization file
+- `iris_train.txt`, the training data
+- `iris_test.txt`, the test data
+- `iris_.5_100_trained.txt`, the weights upon training with learning rate = 0.5
+  and number of epochs = 100
+- `iris_.5_100_results.txt`, the results (i.e. performance statistics) upon
+  testing
+
 The dataset is the famous iris flower dataset first introduced by Ronald Fisher
 in 1936.  The dataset consists of 50 observations of 3 species of iris (setosa,
 virginica and versicolor). Each observation consists of 4 features: the lengths
