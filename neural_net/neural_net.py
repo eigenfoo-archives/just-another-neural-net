@@ -163,7 +163,8 @@ def test(num_output, weights, test_data):
     confusion = np.zeros([num_output, 2, 2])
 
     for inputs, outputs in test_data:
-        predicted = np.around(feedforward(inputs, weights))
+        # Rounding half up
+        predicted = np.floor(feedforward(inputs, weights) + 0.5)
 
         for i in range(num_output):
             if predicted[i] == 1 and outputs[i] == 1:
