@@ -8,12 +8,17 @@ An implementation of a simple, multilayer perceptron with one hidden layer.
 
 ## Installation and Usage
 
+Using git:
+
 ```
 $ git clone https://github.com/eigenfoo/just_another_neural_net.git
 $ cd just_another_neural_net/neural_net
 $ python train.py
 $ python test.py
 ```
+
+Alternatively, you can download the .zip file from my [GitHub
+repository](https://github.com/eigenfoo/just_another_neural_net).
 
 Upon running `train.py`, the user will be prompted for:
 
@@ -45,15 +50,15 @@ The relevant files are:
   testing
 
 The dataset is the famous iris flower dataset first introduced by Ronald Fisher
-in 1936.  The dataset consists of 50 observations of 3 species of iris (setosa,
-virginica and versicolor). Each observation consists of 4 features: the lengths
-and widths of the petals and sepals of each flower.
+in 1936.  The dataset consists of 50 observations of 3 species of iris flower
+(_setosa_, _virginica_ and _versicolor_). Each observation consists of 4
+features: petal length, petal width, sepal length and sepal width.
 
 The data was shuffled and split into a training set of 100 observations, and a
 testing set of 50 observations. The learning rate was 0.5, and the number of
-epochs was 50. The network consisted of 4 input nodes, 5 hidden nodes and 3
-output nodes. This produced a fairly good results, even in spite of the small
-amount of data available.
+epochs was 100. The network consisted of 4 input nodes, 5 hidden nodes and 3
+output nodes. This produced surprisingly good results, with all performance
+statistics upwards of 90%, even in spite of the small amount of data available.
 
 The dataset was collected from scikit-learn's `sklearn.datasets` module, and
 manually manipulated into the format described in the specification. The initial
